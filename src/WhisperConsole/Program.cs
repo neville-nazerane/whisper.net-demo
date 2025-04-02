@@ -23,6 +23,18 @@ Console.WriteLine("Recording... press enter to stop");
 Console.ReadLine();
 waveIn.StopRecording();
 
+var httpClient = new HttpClient
+{
+    BaseAddress = new("http://localhost:5282")
+    //BaseAddress = new("http://192.168.1.183:5000")
+};
+
+using var content = new StreamContent(File.OpenRead(wavFileName));
+content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("audio/wav");
+
+var res = await httpClient.PostAsync("listen", content);
+var str = await res.Content.ReadAsStringAsync();
+return;
 
 
 var modelName = "ggml-large-v1.bin";
