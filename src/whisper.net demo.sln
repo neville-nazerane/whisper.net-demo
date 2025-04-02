@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhisperAPI", "WhisperAPI\Wh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhisperConsole", "WhisperConsole\WhisperConsole.csproj", "{CA82DDB6-E065-4A82-82B2-E881AC4DBF75}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficialConsole", "OfficialConsole\OfficialConsole.csproj", "{2222017B-1ECB-4E15-8382-F3C61DBEC06F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{CA82DDB6-E065-4A82-82B2-E881AC4DBF75}.Release|x64.Build.0 = Release|Any CPU
 		{CA82DDB6-E065-4A82-82B2-E881AC4DBF75}.Release|x86.ActiveCfg = Release|Any CPU
 		{CA82DDB6-E065-4A82-82B2-E881AC4DBF75}.Release|x86.Build.0 = Release|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Debug|x64.Build.0 = Debug|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Debug|x86.Build.0 = Debug|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Release|x64.ActiveCfg = Release|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Release|x64.Build.0 = Release|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Release|x86.ActiveCfg = Release|Any CPU
+		{2222017B-1ECB-4E15-8382-F3C61DBEC06F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -43,7 +43,7 @@ async Task<string> ReadFileAsync(string wavFileName)
     Console.WriteLine("Getting model...");
 
 
-    using var whisperFactory = GetFactory(modelName);
+    using var whisperFactory = WhisperFactory.FromPath(modelName);
 
 
     Console.WriteLine("Getting processor...");
@@ -62,12 +62,3 @@ async Task<string> ReadFileAsync(string wavFileName)
     return builder.ToString();
 }
 
-WhisperFactory GetFactory(string modelName)
-{
-    RuntimeOptions.LoadedLibrary = RuntimeLibrary.Cuda;
-    Console.WriteLine("loaded library has value: " + RuntimeOptions.LoadedLibrary.HasValue);
-
-    var options = WhisperFactoryOptions.Default;
-    options.UseGpu = true;
-    return WhisperFactory.FromPath(modelName, options);
-}
