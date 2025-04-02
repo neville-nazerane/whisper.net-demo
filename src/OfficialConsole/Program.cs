@@ -13,7 +13,7 @@ var modelFileName = "ggml-base.bin";
 var wavFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                                "api",
                                "audio",
-                               "a6627b9f993f4dc5a120aeb60a528a0c.wav");
+                               $"{args[0]}.wav");
 
  using var whisperLogger = LogProvider.AddConsoleLogging(WhisperLogLevel.Debug);
 
@@ -22,7 +22,7 @@ if (!File.Exists(modelFileName))
     await DownloadModelAsync(modelFileName, ggmlType);
 
 // This section creates the whisperFactory object which is used to create the processor object.
-using var whisperFactory = WhisperFactory.FromPath("ggml-base.bin");
+using var whisperFactory = WhisperFactory.FromPath(modelFileName);
 
 // This section creates the processor object which is used to process the audio file, it uses language `auto` to detect the language of the audio file.
 using var processor = whisperFactory.CreateBuilder()

@@ -57,7 +57,10 @@ async Task<string> ReadFileAsync(string wavFileName)
 
     var builder = new StringBuilder();
     await foreach (var result in processor.ProcessAsync(fileStream))
-        builder.AppendLine($"{result.Start}->{result.End}: {result.Text}");
+    {
+        Console.WriteLine(result.Text);
+        builder.AppendLine(result.Text);
+    }
 
     return builder.ToString();
 }
