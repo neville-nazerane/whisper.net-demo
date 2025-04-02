@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using System.IO;
 using System.Text;
 using Whisper.net;
 using Whisper.net.Ggml;
+using Whisper.net.LibraryLoader;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -39,7 +42,9 @@ async Task<string> ReadFileAsync(string wavFileName)
 
     Console.WriteLine("Getting model...");
 
-    using var whisperFactory = WhisperFactory.FromPath(modelName);
+
+    using var whisperFactory = GetFactory(modelName);
+
 
     Console.WriteLine("Getting processor...");
 
@@ -55,4 +60,14 @@ async Task<string> ReadFileAsync(string wavFileName)
         builder.AppendLine($"{result.Start}->{result.End}: {result.Text}");
 
     return builder.ToString();
+}
+
+WhisperFactory GetFactory(string modelName)
+{
+    RuntimeOptions.LoadedLibrary = RuntimeLibrary.Cuda;
+    Console.WriteLine("loaded library has value: " + RuntimeOptions.LoadedLibrary.HasValue);
+
+    var options = WhisperFactoryOptions.Default;
+    options.UseGpu = true;
+    return WhisperFactory.FromPath(modelName, options);
 }

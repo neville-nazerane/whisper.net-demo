@@ -25,8 +25,8 @@ waveIn.StopRecording();
 
 var httpClient = new HttpClient
 {
-    BaseAddress = new("http://localhost:5282")
-    //BaseAddress = new("http://192.168.1.183:5000")
+    //BaseAddress = new("http://localhost:5282")
+    BaseAddress = new("http://192.168.1.183:5000")
 };
 
 using var content = new StreamContent(File.OpenRead(wavFileName));
