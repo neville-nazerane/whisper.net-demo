@@ -11,7 +11,7 @@ var app = builder.Build();
 
 
 // START UP
-var modelName = "ggml-large-v1.bin";
+var modelName = "ggml-large-v3.bin";
 
 Directory.CreateDirectory("audio");
 
@@ -44,7 +44,10 @@ async Task<string> StreamMeAsync(HttpRequest req)
     await using (var file = File.Create(wavFile))
         await req.Body.CopyToAsync(file);
 
-    return await ReadFileAsync(wavFile);
+    var res = await ReadFileAsync(wavFile);
+
+    File.Delete(wavFile);
+    return res;
 }
 
 
@@ -56,7 +59,7 @@ async Task<string> ReadFileAsync(string wavFileName)
     using var whisperFactory = WhisperFactory.FromPath(modelName);
 
     using var processor = whisperFactory.CreateBuilder()
-                                        .WithLanguage("auto")
+                                        .WithLanguage("en")
                                         .Build();
 
     Console.WriteLine("Getting file stream...");

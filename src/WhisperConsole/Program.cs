@@ -11,6 +11,28 @@ using var httpClient = new HttpClient
 
 while (true)
 {
+    await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(1)), RunMeAsync());
+}
+
+
+
+
+
+async Task SendItToTheInternetAsync(string wavFileName)
+{
+    using var content = new StreamContent(File.OpenRead(wavFileName));
+    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("audio/wav");
+
+    using var res = await httpClient.PostAsync("listen", content);
+    DateTime started = DateTime.Now;
+    var str = await res.Content.ReadAsStringAsync();
+    DateTime ended = DateTime.Now;
+    Console.WriteLine($"Took: {(ended - started).TotalMilliseconds} ms");
+    Console.WriteLine(str);
+}
+
+async Task RunMeAsync()
+{
     string wavFileName = $"output-{Guid.NewGuid():N}.wav";
     TaskCompletionSource completionSource = new();
     using var waveIn = new WaveInEvent();
@@ -42,28 +64,12 @@ while (true)
     };
 
     waveIn.StartRecording();
-    Console.WriteLine("Recording... press enter to stop");
-    Console.ReadLine();
+    await Task.Delay(TimeSpan.FromSeconds(10));
+    //Console.WriteLine("Recording... press enter to stop");
+    //Console.ReadLine();
     waveIn.StopRecording();
 
     await completionSource.Task;
-}
-
-
-
-
-
-async Task SendItToTheInternetAsync(string wavFileName)
-{
-    using var content = new StreamContent(File.OpenRead(wavFileName));
-    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("audio/wav");
-
-    using var res = await httpClient.PostAsync("listen", content);
-    DateTime started = DateTime.Now;
-    var str = await res.Content.ReadAsStringAsync();
-    DateTime ended = DateTime.Now;
-    Console.WriteLine($"Took: {(ended - started).TotalMilliseconds} ms");
-    Console.WriteLine(str);
 }
 
 //var modelName = "ggml-large-v1.bin";
