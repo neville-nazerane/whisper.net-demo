@@ -31,9 +31,14 @@ while (true)
 
 async Task SendItToTheInternetAsync(string wavFileName)
 {
-    using var content = new StreamContent(File.OpenRead(wavFileName));
-    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("audio/wav");
+    using var stream = File.OpenRead(wavFileName);
 
+    var fi = new FileInfo(wavFileName);
+    Console.WriteLine($"Length: {fi.Length}, LastWrite: {fi.LastWriteTimeUtc}");
+
+    using var content = new StreamContent(stream);
+    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("audio/wav");
+    
     using var res = await httpClient.PostAsync("listen", content);
     DateTime started = DateTime.Now;
     var str = await res.Content.ReadAsStringAsync();
@@ -48,12 +53,13 @@ async Task HandledRunningAsync()
     {
         string wavFileName = $"output-{Guid.NewGuid():N}.wav";
 
-        Console.WriteLine("Saving " + wavFileName);
+        //Console.WriteLine("Saving " + wavFileName);
         if (OperatingSystem.IsWindows())
             await RunMeAsync(wavFileName);
         else
             await RunMeOnLinuxAsync(wavFileName);
 
+        await Task.Delay(TimeSpan.FromSeconds(2));
         if (File.Exists(wavFileName))
         {
             await SendItToTheInternetAsync(wavFileName);
@@ -77,10 +83,12 @@ async Task RunMeOnLinuxAsync(string wavFileName)
 
     var psi = new ProcessStartInfo
     {
-        FileName = "arecord",
-        ArgumentList = { "-Dshared_mic", "-f", "S32_LE", "-r", "16000", "-c", "4", wavFileName },
+        FileName = "nohup",
+        ArgumentList = { "arecord", "-Dshared_mic", "-f", "S32_LE", "-r", "16000", "-c", "4", "--duration=10", wavFileName },
         RedirectStandardOutput = true,
-        //RedirectStandardError = true
+        RedirectStandardError = true,
+        UseShellExecute = false,
+        CreateNoWindow = true,
     };
 
     using var process = new Process
@@ -90,20 +98,14 @@ async Task RunMeOnLinuxAsync(string wavFileName)
     };
 
     process.OutputDataReceived += (_, s) => Console.WriteLine(s.Data);
-
-    process.ErrorDataReceived += (_, s) => completion.SetException(new Exception(s.Data));
-
+    process.ErrorDataReceived += (_, s) => Console.WriteLine("ERR: " + s.Data);
     process.Exited += (_, _) => completion.TrySetResult();
 
     process.Start();
-    await Task.Delay(TimeSpan.FromSeconds(15));
-    process.Kill();
-    //process.BeginOutputReadLine();
-    //process.BeginErrorReadLine();
 
     await completion.Task;
-    await Task.Delay(TimeSpan.FromMilliseconds(500));
 }
+
 
 async Task RunMeAsync(string wavFileName)
 {
