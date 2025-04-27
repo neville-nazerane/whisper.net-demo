@@ -80,15 +80,40 @@ async Task<string> StreamMeDirectlyAsync(HttpRequest req, CancellationToken canc
 
 async Task<string> StreamMeAsync(HttpRequest req)
 {
-    var wavFile = $"audio/{Guid.NewGuid():N}.wav";
+    return await ReadStreamAsync(req.Body);
+    //var wavFile = $"audio/{Guid.NewGuid():N}.wav";
 
-    await using (var file = File.Create(wavFile))
-        await req.Body.CopyToAsync(file);
+    //await using (var file = File.Create(wavFile))
+    //    await req.Body.CopyToAsync(file);
 
-    var res = await ReadFileAsync(wavFile);
+    //var res = await ReadFileAsync(wavFile);
 
-    File.Delete(wavFile);
-    return res;
+    //File.Delete(wavFile);
+    //return res;
+}
+
+async Task<string> ReadStreamAsync(Stream stream)
+{
+
+    await using var ms = new MemoryStream();
+    await stream.CopyToAsync(ms);
+    ms.Position = 0;
+
+    Console.WriteLine("Getting processor...");
+
+    using var whisperFactory = WhisperFactory.FromPath(modelName);
+    using var processor = whisperFactory.CreateBuilder()
+                                        .WithLanguage("en")
+                                        .Build();
+
+    var builder = new StringBuilder();
+    await foreach (var result in processor.ProcessAsync(ms))
+    {
+        Console.WriteLine(result.Text);
+        builder.AppendLine(result.Text);
+    }
+
+    return builder.ToString();
 }
 
 
