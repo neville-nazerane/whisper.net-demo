@@ -400,3 +400,4 @@ FodyWeavers.xsd
 *.sln.iml
 /src/WhisperAPI/audio
 /src/WhisperAPI/ggml-medium.en.bin
+/src/WhisperAPI/published
