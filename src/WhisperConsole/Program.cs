@@ -10,18 +10,19 @@ using var httpClient = new HttpClient
 };
 
 while (true)
-{
     await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(1)), RunMeAsync());
-}
 
 
 
 
 
-async Task SendItToTheInternetAsync(string wavFileName)
+async Task SendItToTheInternetAsync(string wavFileName, DateTime? recordingStarted)
 {
     using var content = new StreamContent(File.OpenRead(wavFileName));
     content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("audio/wav");
+
+    if (recordingStarted is not null)
+        content.Headers.Add("startedOn", recordingStarted.Value.Ticks.ToString());
 
     using var res = await httpClient.PostAsync("listen", content);
     DateTime started = DateTime.Now;
@@ -42,6 +43,8 @@ async Task RunMeAsync()
     var disposed = false;
     var writeLock = new object();
 
+    DateTime? started = null;
+
     waveIn.DataAvailable += (s, a) =>
     {
         lock (writeLock)
@@ -59,10 +62,11 @@ async Task RunMeAsync()
             writer.Dispose();
         }
 
-        await SendItToTheInternetAsync(wavFileName);
+        await SendItToTheInternetAsync(wavFileName, started);
         completionSource.SetResult();
     };
 
+    started = DateTime.UtcNow;
     waveIn.StartRecording();
     await Task.Delay(TimeSpan.FromSeconds(10));
     //Console.WriteLine("Recording... press enter to stop");
