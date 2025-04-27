@@ -1,6 +1,4 @@
 ﻿using NAudio.Wave;
-using Whisper.net;
-using Whisper.net.Ggml;
 
 
 using var httpClient = new HttpClient

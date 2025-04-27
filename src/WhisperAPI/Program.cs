@@ -72,6 +72,9 @@ async Task<string> StreamMeDirectlyAsync(HttpRequest req, CancellationToken canc
         Console.WriteLine($"Timestamps: {result.Start}, {result.End}");
         Console.WriteLine(result.Text);
 
+        var tokens = result.Tokens.Select(t => $"{t.Text}: {t.Start}");
+        Console.WriteLine(string.Join(", ", tokens));
+
         builder.AppendLine(result.Text);
     }
 
